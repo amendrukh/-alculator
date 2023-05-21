@@ -1,28 +1,3 @@
-/*
-* У папці calculator дана верстка макета калькулятора.
-Потрібно зробити цей калькулятор робочим.
-* При натисканні на клавіші з цифрами - набір введених цифр має бути показаний на табло калькулятора.
-* При натисканні на знаки операторів (`*`, `/`, `+`, `-`) на табло нічого не відбувається - програма чекає введення
-* другого числа для виконання операції.
-* Якщо користувач ввів одне число, вибрав оператор і ввів друге число, то при натисканні як кнопки `=`, так і будь-якого
-*  з операторів, в табло повинен з'явитися результат виконання попереднього виразу.
-* При натисканні клавіш `M+` або `M-` у лівій частині табло необхідно показати маленьку букву `m` - це означає, що в
-* пам'яті зберігається число. Натискання на MRC покаже число з пам'яті на екрані. Повторне натискання `MRC`
-* має очищати пам'ять.
-*/
-
-/*
-1. Зєжнати верстку з джс
-Потрібно зробити цей калькулятор робочим.
-2. Знайти всі кнопки та спрбувати їх вивести у консоль
-3. Записти перші числа в память коду
-4. вивести числа на екран
-5. додати знаки ар. операцій
-6. Знайти другі числа
-7. Вивести другі числа
-8. Вивести результат операції
-*/
-
 const calculate = {
     operand1: "",
     sign: "",
@@ -31,8 +6,6 @@ const calculate = {
     mem: 0,
     lastEvent: ""
 }
-
-// https://regexr.com/
 
 function operands(targetValue) {
     if (calculate.sign === "") {
@@ -104,6 +77,11 @@ function del() {
 }
 
 document.querySelector(".keys").addEventListener("click", (e) => {
+    const input = document.querySelector(".display__entryField");
+    const entryField = document.querySelector(".display__description span");
+
+    calculate.lastEvent = e.target.value;
+
     if (validate(/[\d\.]/, e.target.value)) {
         operands(e.target.value);
 
@@ -119,48 +97,56 @@ document.querySelector(".keys").addEventListener("click", (e) => {
         del();
 
     } else if (validate(/^m-$/, e.target.value)) {
-        const input = get();
-        calculate.mem = Number(calculate.mem) - input;
-        document.querySelector(".display div").innerHTML = "m";
-        document.querySelector(".display div").classList.add("absolute");
+        const inputValue = get();
+        calculate.mem = Number(calculate.mem) - inputValue;
+        calculate.operand1 = "";
+        input.value = "";
+        entryField.innerHTML = "m-";
+        entryField.classList.add("absolute");
 
     } else if (validate(/^m[+]$/, e.target.value)) {
-        const input = get();
-        calculate.mem = Number(calculate.mem) + input;
-        document.querySelector(".display div").innerHTML = "m";
-        document.querySelector(".display div").classList.add("absolute");
+        const inputValue = get();
+        calculate.mem = Number(calculate.mem) + inputValue;
+        calculate.operand1 = "";
+        input.value = "";
+        entryField.innerHTML = "m+";
+        entryField.classList.add("absolute");
 
     } else if (validate(/^mrc$/, e.target.value)) {
         if (calculate.lastEvent === e.target.value) {
-            calculate.mem = 0;
-            document.querySelector(".display div").innerHTML = "";
-            document.querySelector(".display div").classList.remove("absolute");
-        } else {
             if (calculate.operand1 === "" && calculate.sign === "" && calculate.operand2 === "") {
                 calculate.operand1 = calculate.mem;
+                console.log(`O1: ${calculate.operand1}`)
                 show(calculate.operand1);
             } else if (calculate.operand1 !== "" && calculate.sign === "" && calculate.operand2 === "") {
                 calculate.operand1 = calculate.mem;
+                console.log(`Mem: ${calculate.mem}`)
+                console.log(`O1: ${calculate.operand1}`)
+                console.log(`O2: ${calculate.operand2}`)
                 show(calculate.operand1);
             } else if (calculate.operand1 !== "" && calculate.sign !== "" && calculate.operand2 === "") {
                 calculate.operand2 = calculate.mem;
+                console.log(`Mem: ${calculate.mem}`)
+                console.log(`O1: ${calculate.operand1}`)
+                console.log(`O2: ${calculate.operand2}`)
                 show(calculate.operand2);
-            } else {
-                calculate.operand2 = calculate.mem;
-                show(calculate.operand2);
+                entryField.innerHTML = "";
+                entryField.classList.remove("absolute");
+                if (calculate.operand2 === calculate.mem) {
+                    calculate.mem = 0;
+                }
             }
         }
     }
-    calculate.lastEvent = e.target.value;
 });
 
 function show(v) {
-    const d = document.querySelector(".display input");
+    const d = document.querySelector(".display__entryField");
     d.value = v;
 }
 
 function get() {
-    const d = document.querySelector(".display input");
+    const d = document.querySelector(".display__entryField");
     if (d.value === "") {
         return 0;
     } else {

@@ -1,108 +1,140 @@
-body {
-    background-color: tan;
+:root {
+    font-size: 16px;
+    --box-background: #3457AFFF;
+    --display-background: rgb(56, 73, 82, 98%);
+    --btn-blue: #5a6bdc;
+    --btn-navyBlue: #303030;
+    --btn-lightBlue: #374dc3;
+    --btn-gray: #384954;
+    --btn-active: #303030;
 }
 
-.box {
-    background-color: #3d4543;
-    height: 300px;
-    width: 250px;
-    border-radius: 10px;
+body {
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background: url("img/jellyfish_background.jpg");
+    background-size: cover;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.calculator__box {
+    font-family: 'Roboto', sans-serif;
+    display: inline-flex;
+    width: 50%;
+    height: 55%;
+    margin: auto;
+    align-items: center;
+    background-color: var(--box-background);
+    border-radius: 20px;
     position: relative;
-    top: 80px;
-    left: 40%;
+}
+
+.calculator__box-el {
+    width: 50%;
+    height: 100%;
+    align-items: center;
+}
+
+.calculator__box-el:last-child {
+    background-color: white;
+    border-radius: 0 10px 10px 0;
 }
 
 .display {
-    background-color: #222;
-    width: 225px;
     position: relative;
-    left: 15px;
-    top: 20px;
-    height: 40px;
 }
 
-.display input {
-    width: 220px;
-    position: relative;
-    left: 2px;
-    top: 2px;
-    height: 35px;
-    color: black;
-    background-color: #bccd95;
-    font-size: 21px;
+.display__description {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    bottom: 20px;
+    right: 18px;
+    background-color: var(--display-background);
+}
+
+.display__entryField {
+    padding: 0;
+    margin-top: 15%;
+    border: unset;
+    width: 100%;
+    height: 20%;
+    color: white;
+    background: linear-gradient(90deg, rgba(0, 2, 14, 1) 0%, rgba(7, 18, 24, 0.644782913165266) 35%, rgba(44, 68, 73, 0.6083683473389356) 100%);
+    font-size: 4rem;
     text-align: right;
 }
 
 .absolute {
     position: absolute;
-    z-index: 1;
-    left: 10px;
+    top: 58px;
+    left: 8px;
+    color: white;
 }
+
 .keys {
     position: relative;
-    top: 15px;
+    height: 100%;
+    padding: 18px 10px;
+    box-sizing: border-box;
+}
+
+.container__button {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    height: 20%;
+    margin: unset;
+    line-height: 10px;
 }
 
 .button {
-    width: 40px;
-    height: 30px;
+    width: 20%;
+    height: 83%;
+    font-size: 1.5rem;
+    color: white;
     border: none;
-    border-radius: 8px;
-    margin-left: 17px;
     cursor: pointer;
-    border-top: 2px solid transparent;
-    outline: none;
+    /*outline: none;*/
 }
 
 .button.gray {
-    color: white;
-    background-color: #6f6f6f;
-    border-bottom: black 2px solid;
-    border-top: 2px #6f6f6f solid;
+    box-shadow: inset 0 0 64px -2px rgba(56, 73, 84, 1);
 }
 
 .button.pink {
-    color: black;
-    background-color: #ff4561;
-    border-bottom: black 2px solid;
+    font-weight: bold;
+    background-color: var(--btn-blue);
+    box-shadow: inset 0 0 64px -2px rgba(56, 73, 84, 1);
 }
 
 .button.black {
-    color: white;
     background-color: #303030;
-    border-bottom: black 2px solid;
-    border-top: 2px #303030 solid;
+    box-shadow: inset 0 0 64px -2px rgba(2, 16, 56, 1);
 }
 
 .button.orange {
-    color: black;
-    background-color: #FF9933;
-    border-bottom: black 2px solid;
-    border-top: 2px #FF9933 solid;
+    font-weight: bold;
+    background-color: rgb(7, 42, 218);
+    box-shadow: inset 0 0 64px -2px rgb(61, 136, 183);
 }
 
-.gray:active {
-    border-top: black 2px solid;
-    border-bottom: 2px #6f6f6f solid;
-}
-
-.pink:active {
-    border-top: black 2px solid;
-    border-bottom: #ff4561 2px solid;
-}
-
-.black:active {
-    border-top: black 2px solid;
-    border-bottom: #303030 2px solid;
-}
-
+.gray:active,
+.pink:active,
+.black:active,
 .orange:active {
-    border-top: black 2px solid;
-    border-bottom: #FF9933 2px solid;
-}
-
-p {
-    line-height: 10px;
+    background-color: unset;
+    color: var(--btn-active);
 }
 
 input[disabled] {
