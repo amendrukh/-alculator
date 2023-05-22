@@ -49,8 +49,6 @@ function calc() {
     let number2 = Number(calculate.operand2);
 
     if (calculate.sign === "+") {
-        console.log(number1);
-        console.log(number2);
         calculate.rez = Number(number1 + number2);
         show(calculate.rez);
     } else if (calculate.sign === "-") {
@@ -76,7 +74,10 @@ function del() {
     calculate.operand1 = "";
 }
 
+let li = document.createElement("li");
+
 document.querySelector(".keys").addEventListener("click", (e) => {
+    showHistory(e.target.value);
     const input = document.querySelector(".display__entryField");
     const entryField = document.querySelector(".display__description span");
 
@@ -155,3 +156,25 @@ function get() {
 }
 
 const validate = (r, v) => r.test(v);
+
+function showHistory(targetValue) {
+    const history = document.querySelector(".display__history-list");
+    if (targetValue !== "")
+        if (targetValue !== "=" && targetValue !== "C") {
+            li.insertAdjacentHTML("beforeend", `<span>${date()}</span>`);
+            li.innerHTML += targetValue;
+        } else {
+            li = document.createElement("li");
+            showHistory("");
+        }
+    return history.append(li);
+}
+
+function date() {
+    let data = new Date();
+    let hour = data.getHours();
+    let minutes = data.getMinutes();
+    let rez = `${hour} : ${minutes}`
+    hour > 12 ? rez += " PM" : rez += " AM";
+    return rez;
+}
