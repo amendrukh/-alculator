@@ -4,7 +4,8 @@ const calculate = {
     operand2: "",
     rez: "",
     mem: 0,
-    lastEvent: ""
+    lastEvent: "",
+    tempHistory: []
 }
 
 let displayIconHistory = document.querySelector(".display__icon-history");
@@ -58,6 +59,9 @@ function operands(targetValue) {
         calculate.operand2 = 0 + ".";
         show(calculate.operand2);
     }
+
+    if (calculate.operand1 !== "" && calculate.operand2 !== "" && calculate.sign !== "") {
+    }
 }
 
 function sign(targetValue) {
@@ -97,10 +101,12 @@ function calc() {
         }
     }
 
-    if (calculate.rez < 1 && calculate.rez > 0 || calculate.rez > -1 && calculate.rez < 0 ) {
+    if (calculate.rez < 1 && calculate.rez > 0 || calculate.rez > -1 && calculate.rez < 0) {
         console.log(calculate.rez)
         calculate.rez = calculate.rez.toFixed(2);
     }
+    calculate.tempHistory.push(createObjectHistory(calculate.operand1, calculate.sign, calculate.operand2, calculate.rez));
+    generateHistoryList(calculate.tempHistory)
     show(calculate.rez);
 }
 
@@ -114,9 +120,7 @@ function del() {
 }
 
 let li = document.createElement("li");
-
 document.querySelector(".keys").addEventListener("click", (e) => {
-    //showHistory(e.target.value);
     const input = document.querySelector(".display__entryField");
     const entryField = document.querySelector(".display__icon-mem");
 
@@ -202,24 +206,28 @@ function get() {
 
 const validate = (r, v) => r.test(v);
 
-function showHistory(targetValue) {
-    const history = document.querySelector(".display__history-list");
-    if (targetValue !== "")
-        if (targetValue !== "=" && targetValue !== "C") {
-            li.insertAdjacentHTML("beforeend", `<span>${date()}</span>`);
-            li.innerHTML += targetValue;
-        } else {
-            li = document.createElement("li");
-            showHistory("");
-        }
-    return history.append(li);
-}
-
 function date() {
     let data = new Date();
     let hour = data.getHours();
     let minutes = data.getMinutes();
-    let rez = `${hour} : ${minutes}`
+    let rez = `${hour}:${minutes}`
     hour > 12 ? rez += " PM" : rez += " AM";
     return rez;
+}
+
+function createObjectHistory(operand1, sign, operand2, rez) {
+    return {
+        date: date(),
+        calcExpression: [operand1, sign, operand2, "=", rez].join(" ")
+    }
+}
+
+function generateHistoryList(tempHistory) {
+    let historyList = document.querySelector(".display__history-list");
+    tempHistory.forEach((el, index) => {
+        let li = document.createElement("li");
+        li.insertAdjacentHTML("beforeend", `<span class="list__el-date">${el.date}</span><span class="list__el-descr">${el.calcExpression}</span>`);
+        tempHistory.splice(index, 1)
+        historyList.append(li);
+    })
 }
