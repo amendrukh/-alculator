@@ -7,20 +7,55 @@ const calculate = {
     lastEvent: ""
 }
 
+let displayIconHistory = document.querySelector(".display__icon-history");
+displayIconHistory.addEventListener("click", (e) => {
+    let displayHistory = document.querySelector(".display__history");
+    let calculatorBoxEl = document.querySelector(".calculator__box-el:last-child");
+    calculatorBoxEl.classList.toggle("active")
+})
+
 function operands(targetValue) {
     if (calculate.sign === "") {
-        if (targetValue === "." && calculate.operand1.includes(".")) {
-            return;
+        let calculateEls = String(calculate.operand1).split("");
+        if (targetValue === ".") {
+            let isDot = calculateEls.find((el, index) => el === targetValue);
+            if (isDot) {
+                return;
+            }
         }
 
+        if (targetValue === calculate.rez) {
+            calculate.operand1 = calculate.rez;
+            return show(calculate.operand1);
+        }
+
+        if (calculateEls[0] === "0" && calculateEls[1] !== ".") {
+            calculateEls.splice(0, 1);
+            calculate.operand1 = calculateEls.join("");
+            show(calculate.operand1);
+        }
         calculate.operand1 += targetValue;
         show(calculate.operand1);
         calculate.rez = calculate.operand1;
+
     } else {
         if (targetValue === "." && calculate.operand2.includes(".")) {
             return;
         }
+
+        if (calculate.operand2[0] === "0" && calculate.operand2[1] !== ".") {
+            calculate.operand2 = calculate.operand2.replace("0", "");
+            show(calculate.operand2);
+        }
         calculate.operand2 += targetValue;
+        show(calculate.operand2);
+    }
+
+    if (calculate.operand1 === ".") {
+        calculate.operand1 = 0 + ".";
+        show(calculate.operand1);
+    } else if (calculate.operand2 === ".") {
+        calculate.operand2 = 0 + ".";
         show(calculate.operand2);
     }
 }
@@ -50,36 +85,40 @@ function calc() {
 
     if (calculate.sign === "+") {
         calculate.rez = Number(number1 + number2);
-        show(calculate.rez);
     } else if (calculate.sign === "-") {
         calculate.rez = Number(number1 - number2);
-        show(calculate.rez);
     } else if (calculate.sign === "*") {
         calculate.rez = Number(number1 * number2);
-        show(calculate.rez);
     } else if (calculate.sign === "/") {
         if (number2 === 0) {
             calculate.rez = `Error`
-            show(calculate.rez);
         } else {
             calculate.rez = Number(number1 / number2);
-            show(calculate.rez);
         }
     }
+
+    if (calculate.rez < 1 && calculate.rez > 0 || calculate.rez > -1 && calculate.rez < 0 ) {
+        console.log(calculate.rez)
+        calculate.rez = calculate.rez.toFixed(2);
+    }
+    show(calculate.rez);
 }
 
 function del() {
     const rez = document.querySelector(".display input");
     rez.value = "0";
-    calculate.operand1 = "";
+    calculate.operand1 = 0;
+    calculate.operand2 = "";
+    calculate.rez = "";
+    calculate.mem = 0;
 }
 
 let li = document.createElement("li");
 
 document.querySelector(".keys").addEventListener("click", (e) => {
-    showHistory(e.target.value);
+    //showHistory(e.target.value);
     const input = document.querySelector(".display__entryField");
-    const entryField = document.querySelector(".display__description span");
+    const entryField = document.querySelector(".display__icon-mem");
 
     calculate.lastEvent = e.target.value;
 
@@ -90,12 +129,14 @@ document.querySelector(".keys").addEventListener("click", (e) => {
         sign(e.target.value);
     } else if (validate(/^=$/, e.target.value)) {
         calc();
-        calculate.operand1 = calculate.rez;
+        //calculate.operand1 = calculate.rez;
         calculate.operand2 = "";
         calculate.sign = "";
+        operands(calculate.rez)
 
     } else if (validate(/^C$/, e.target.value)) {
         del();
+        entryField.innerHTML = "";
 
     } else if (validate(/^m-$/, e.target.value)) {
         const inputValue = get();
@@ -112,8 +153,11 @@ document.querySelector(".keys").addEventListener("click", (e) => {
         input.value = "";
         entryField.innerHTML = "m+";
         entryField.classList.add("absolute");
+        console.log(calculate.mem)
 
     } else if (validate(/^mrc$/, e.target.value)) {
+        entryField.classList.remove("absolute");
+        entryField.innerHTML = "";
         if (calculate.lastEvent === e.target.value) {
             if (calculate.operand1 === "" && calculate.sign === "" && calculate.operand2 === "") {
                 calculate.operand1 = calculate.mem;
@@ -137,6 +181,7 @@ document.querySelector(".keys").addEventListener("click", (e) => {
                     calculate.mem = 0;
                 }
             }
+            calculate.mem = 0;
         }
     }
 });

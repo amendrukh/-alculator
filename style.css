@@ -32,24 +32,41 @@ li {
 .calculator__box {
     font-family: 'Roboto', sans-serif;
     display: inline-flex;
+    flex-direction: row;
     width: 50%;
-    height: 55%;
+    height: 70%;
     margin: auto;
     align-items: center;
-    background-color: var(--box-background);
-    border-radius: 20px;
+    /*background-color: var(--box-background);*/
+    /*border-radius: 20px;*/
     position: relative;
 }
 
+.box-el__item {
+    height: 100%;
+    width: 100%;
+}
+
 .calculator__box-el {
-    width: 50%;
+    width: 100%;
     height: 100%;
     align-items: center;
 }
 
-.calculator__box-el:last-child {
+.calculator__box-el:first-child {
+    width: 100%;
     background-color: white;
-    border-radius: 0 10px 10px 0;
+    /*border-radius: 0 10px 10px 0;*/
+}
+
+.calculator__box-el:last-child {
+    display: none;
+    width: 0;
+}
+
+.calculator__box-el.active:last-child {
+    display: inline-block;
+    width: 100%;
 }
 
 .display {
@@ -57,37 +74,65 @@ li {
 }
 
 .display__description {
-    position: absolute;
+    position: relative;
     width: 100%;
     height: 100%;
-    border-radius: 10px;
-    bottom: 20px;
-    right: 18px;
-    background-color: var(--display-background);
+    /*border-radius: 10px;*/
+    /*bottom: 20px;*/
+    /*right: 18px;*/
+    /*background-color: var(--display-background);*/
+}
+
+.box-el__item:first-child {
+    height: 20%;
+}
+
+.box-el__item:nth-child(2n) {
+    height:80%;
+   // background-color: white;
 }
 
 .display__entryField {
     padding: 0;
-    margin-top: 15%;
+    /*margin-top: 15%;*/
     border: unset;
     width: 100%;
-    height: 20%;
+    height: 100%;
     color: white;
-    background: linear-gradient(90deg, rgba(0, 2, 14, 1) 0%, rgba(7, 18, 24, 0.644782913165266) 35%, rgba(44, 68, 73, 0.6083683473389356) 100%);
+    background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(2,11,70,1) 35%, rgb(136, 135, 129) 100%);
     font-size: 3rem;
     text-align: right;
 }
 
 .display__history {
+    /*display: none;*/
+    /*position: absolute;*/
     width: 100%;
     height: 100%;
+    background-color:rgb(136, 135, 129);
+}
+
+
+.display__icon-history {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 9%;
+    height: 32%;
+    cursor: pointer;
+}
+
+.display__icon-history svg {
+    fill-opacity: 50%;
+}
+.display__icon-history svg:hover {
+    fill-opacity: 100%;
 }
 
 .display__history-title {
-    background: url("img/icon-clock.svg") no-repeat;
     background-position-y: center;
     background-position-x: 4px;
-    padding: 10px 0 10px 35px;
+    padding: 10px 0 10px 10px;
     color: #ffffff;
 }
 
@@ -111,14 +156,13 @@ li {
 
 .absolute {
     position: absolute;
-    top: 58px;
-    left: 8px;
+    top: 50px;
+    left: 15px;
     color: white;
 }
 
 .keys {
     position: relative;
-    height: 100%;
     padding: 18px 10px;
     box-sizing: border-box;
 }
