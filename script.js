@@ -8,9 +8,8 @@ const calculate = {
     tempHistory: []
 }
 
-let displayIconHistory = document.querySelector(".display__icon-history");
-displayIconHistory.addEventListener("click", (e) => {
-    let displayHistory = document.querySelector(".display__history");
+let displayIconHistory = document.querySelector(".display__description-icon");
+displayIconHistory.addEventListener("click", () => {
     let calculatorBoxEl = document.querySelector(".calculator__box-el:last-child");
     calculatorBoxEl.classList.toggle("active")
 })
@@ -19,7 +18,7 @@ function operands(targetValue) {
     if (calculate.sign === "") {
         let calculateEls = String(calculate.operand1).split("");
         if (targetValue === ".") {
-            let isDot = calculateEls.find((el, index) => el === targetValue);
+            let isDot = calculateEls.find((el) => el === targetValue);
             if (isDot) {
                 return;
             }
@@ -122,7 +121,7 @@ function del() {
 let li = document.createElement("li");
 document.querySelector(".keys").addEventListener("click", (e) => {
     const input = document.querySelector(".display__entryField");
-    const entryField = document.querySelector(".display__icon-mem");
+    const entryField = document.querySelector(".display__description-icon-mem");
 
     calculate.lastEvent = e.target.value;
 
