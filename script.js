@@ -10,8 +10,14 @@ const calculate = {
 
 let displayIconHistory = document.querySelector(".display__description-icon");
 displayIconHistory.addEventListener("click", () => {
-    let calculatorBoxEl = document.querySelector(".calculator__box-el:last-child");
-    calculatorBoxEl.classList.toggle("active")
+    let calculatorBoxElLast = document.querySelector(".calculator__box-el:last-child");
+    if (calculatorBoxElLast.classList.contains("active")) {
+        calculatorBoxElLast.classList.add("do")
+        setTimeout(() => calculatorBoxElLast.classList.toggle("active"), 2000);
+    } else {
+        calculatorBoxElLast.classList.toggle("active");
+        calculatorBoxElLast.classList.remove("do");
+    }
 })
 
 function operands(targetValue) {
@@ -25,6 +31,20 @@ function operands(targetValue) {
         }
 
         if (targetValue === calculate.rez) {
+            if (calculate.lastEvent === "±") {
+                if (Math.sign(calculate.rez) === 1) {
+                    calculate.rez = -calculate.rez;
+                } else {
+                    calculate.rez = calculate.rez * -1;
+                }
+            } else if (calculate.lastEvent === "π") {
+                calculate.rez = Math.PI;
+            } else if (calculate.lastEvent === "%") {
+                calculate.rez = calculate.operand1 / 100;
+            } else if (calculate.lastEvent === "√") {
+                calculate.rez = Math.sqrt(calculate.operand1);
+            }
+
             calculate.operand1 = calculate.rez;
             return show(calculate.operand1);
         }
@@ -42,7 +62,23 @@ function operands(targetValue) {
         if (targetValue === "." && calculate.operand2.includes(".")) {
             return;
         }
-
+        if (calculate.lastEvent === "±") {
+            if (Math.sign(calculate.operand2) === 0) {
+                calculate.operand2 = -calculate.operand2;
+            } else if (Math.sign(calculate.operand2) === 1) {
+                calculate.operand2 = calculate.operand2 * -1;
+            }
+            return show(calculate.operand2);
+        } else if (calculate.lastEvent === "π") {
+            calculate.operand2 = Math.PI;
+            return show(calculate.operand2);
+        } else if (calculate.lastEvent === "%") {
+            calculate.operand2 = calculate.operand2 / 100;
+            return show(calculate.operand2);
+        } else if (calculate.lastEvent === "√") {
+            calculate.operand2 = Math.sqrt(calculate.operand2);
+            return show(calculate.operand2);
+        }
         if (calculate.operand2[0] === "0" && calculate.operand2[1] !== ".") {
             calculate.operand2 = calculate.operand2.replace("0", "");
             show(calculate.operand2);
@@ -85,6 +121,8 @@ function sign(targetValue) {
 function calc() {
     let number1 = Number(calculate.operand1);
     let number2 = Number(calculate.operand2);
+    console.log(number1)
+    console.log(number2)
 
     if (calculate.sign === "+") {
         calculate.rez = Number(number1 + number2);
@@ -100,10 +138,10 @@ function calc() {
         }
     }
 
-    if (calculate.rez < 1 && calculate.rez > 0 || calculate.rez > -1 && calculate.rez < 0) {
-        console.log(calculate.rez)
+    if (calculate.rez < 1 && calculate.rez > 0 || calculate.rez > -1 && calculate.rez < 0 || calculate.rez.toString().includes(".")) {
         calculate.rez = calculate.rez.toFixed(2);
     }
+
     calculate.tempHistory.push(createObjectHistory(calculate.operand1, calculate.sign, calculate.operand2, calculate.rez));
     generateHistoryList(calculate.tempHistory)
     show(calculate.rez);
@@ -120,6 +158,7 @@ function del() {
 
 let li = document.createElement("li");
 document.querySelector(".keys").addEventListener("click", (e) => {
+    console.log(e.target.value)
     const input = document.querySelector(".display__entryField");
     const entryField = document.querySelector(".display__description-icon-mem");
 
@@ -130,11 +169,40 @@ document.querySelector(".keys").addEventListener("click", (e) => {
 
     } else if (validate(/^[+-/*]$/, e.target.value)) {
         sign(e.target.value);
+    } else if (validate(/^±$/, e.target.value)) {
+        if (calculate.operand1 !== "" && calculate.sign === "" && calculate.operand2 === "") {
+            operands(calculate.rez);
+        } else if (calculate.operand1 !== "" && calculate.sign !== "" && calculate.operand2 !== "") {
+            operands(calculate.operand2);
+        }
+
+    } else if (validate(/^π$/, e.target.value)) {
+        if (calculate.operand1 === calculate.rez) {
+            operands(calculate.rez);
+        } else {
+            operands(calculate.operand2);
+        }
+
+    } else if (validate(/^%$/, e.target.value)) {
+        if (calculate.operand1 === calculate.rez) {
+            operands(calculate.rez);
+        } else {
+            operands(calculate.operand2);
+        }
+
+    } else if (validate(/^√$/, e.target.value)) {
+        if (calculate.operand1 !== "" && calculate.sign === "" && calculate.operand2 === "") {
+            operands(calculate.operand1);
+
+        } else if (calculate.operand1 !== "" && calculate.sign !== "" && calculate.operand2 !== "") {
+            operands(calculate.operand2);
+        }
     } else if (validate(/^=$/, e.target.value)) {
         calc();
         //calculate.operand1 = calculate.rez;
         calculate.operand2 = "";
         calculate.sign = "";
+        console.log(calculate.rez)
         operands(calculate.rez)
 
     } else if (validate(/^C$/, e.target.value)) {
